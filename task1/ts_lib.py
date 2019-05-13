@@ -2,7 +2,7 @@ import numpy as np
 
 
 def fc(x, w, b):
-    out = x.dot(w) + b
+    out = x.reshape(x.shape[0], np.prod(x.shape[1:])).dot(w) + b
     cache = (x, w, b)
     return out, cache
 
@@ -10,19 +10,21 @@ def fc(x, w, b):
 def fc_back(dout, cache):
     x, w, b = cache
     db = np.sum(dout, axis=0)
-    dx = dout.dot(w.T)
-    dw = x.T.dot(dout)
+    dx = dout.dot(w.T).reshape(x.shape)
+    dw = x.reshape(x.shape[0], w.shape[0]).T.dot(dout)
     return dx, dw, db
 
 
 def softmax(x, y):
-    x_exp = np.exp(x)
-    x_sum = np.sum(x_exp, axis=1)
-    arr = np.arange(x.shape[0])
-    loss = -np.sum(np.log(x_exp[arr, y[arr]]/x_sum)) / x.shape[0]
-    dx = np.log(x_exp[arr, y[arr]] / x_sum)
-    dx[arr, y[arr]] -= 1
-    dx /= x.shape[0]
+
+    minus = x - np.max(x, axis=1, keepdims=True)
+    x_log = minus - np.log(np.sum(np.exp(minus), axis=1, keepdims=True))
+    x_exp = np.exp(x_log)
+    N = x.shape[0]
+    loss = -np.sum(x_log[np.arange(N), y]) / N
+    dx = x_exp.copy()
+    dx[np.arange(N), y] -= 1
+    dx /= N
     return loss, dx
 
 

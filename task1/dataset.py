@@ -5,7 +5,7 @@ import tensorflow as tf
 
 class MNIST(object):
 
-    def __init__(self, batch_size, shuffle=False):
+    def __init__(self, batch_size=1, shuffle=False):
 
         train, _ = tf.keras.datasets.mnist.load_data()
         X, y = train

@@ -32,12 +32,12 @@ class Solver:
 
         for i in range(self.times):
             self.step()
-            if i % 5 == 0:
+            if i % 10 == 0:
                 print('repeat ', i, ' times:')
                 self.check_acc()
         self.check_acc()
 
-    def check_acc(self, iters=1000):
+    def check_acc(self, iters=100):
 
         batch_mask = np.random.choice(self.X_train.shape[0], iters)
         X = self.X_train[batch_mask]
@@ -46,7 +46,7 @@ class Solver:
         y_pred = np.argmax(scores, axis=1)
         train_acc = np.mean(y == y_pred)
 
-        batch_mask = np.random.choice(self.X_train.shape[0], iters)
+        batch_mask = np.random.choice(self.X_val.shape[0], iters)
         X = self.X_val[batch_mask]
         y = self.y_val[batch_mask]
         scores = self.model.loss(X)

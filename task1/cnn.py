@@ -1,8 +1,11 @@
 import numpy as np
-import task1.ts_lib
+# runtime
+import ts_lib
+# debug
+# import task1.ts_lib
 
 
-# conv ->relu ->pool -> fc ->relu ->fc
+# conv ->relu ->max_pool -> fc ->relu ->fc
 class Cnn(object):
 
     def __init__(self, input_dim=(1, 28, 28), num_filters=32, filter_size=7,
@@ -31,25 +34,25 @@ class Cnn(object):
         pool_width = 2
         pool_stride = 2
 
-        layer1, cache1 = task1.ts_lib.conv(X, W1, b1, conv_stride, conv_pad)
-        layer1_relu, cache1_relu = task1.ts_lib.conv(layer1)
-        layer1_pool, cache1_pool = task1.ts_lib.max_pool(layer1_relu, pool_height, pool_width, pool_stride)
-        layer2, cache2 = task1.ts_lib.fc(layer1_pool, W2, b2)
-        layer2_relu, cache2_relu = task1.ts_lib.relu(layer2)
-        scores, cache3 = task1.ts_lib.fc(layer2_relu, W3, b3)
+        layer1, cache1 = ts_lib.conv(X, W1, b1, conv_stride, conv_pad)
+        layer1_relu, cache1_relu = ts_lib.relu(layer1)
+        layer1_pool, cache1_pool = ts_lib.max_pool(layer1_relu, pool_height, pool_width, pool_stride)
+        layer2, cache2 = ts_lib.fc(layer1_pool, W2, b2)
+        layer2_relu, cache2_relu = ts_lib.relu(layer2)
+        scores, cache3 = ts_lib.fc(layer2_relu, W3, b3)
 
-        if not y:
+        if y is None:
             return scores
 
         grads = {}
-        loss, dscores = task1.ts_lib.softmax(scores, y)
+        loss, dscores = ts_lib.softmax(scores, y)
         loss += 0.5 * self.reg * (np.sum(W1 ** 2) + np.sum(W2 ** 2) + np.sum(W3 ** 2))
-        dlayer2_relu, grads['W3'], grads['b3'] = task1.ts_lib.fc_back(dscores, cache3)
-        dlayer2 = task1.ts_lib.relu_back(dlayer2_relu, cache2_relu)
-        dlayer1_pool, grads['W2'], grads['b2'] = task1.ts_lib.fc_back(dlayer2, cache2)
-        dlayer1_relu = task1.ts_lib.max_pool_back(dlayer1_pool, cache1_pool)
-        dlayer1 = task1.ts_lib.relu_back(dlayer1_relu, cache1_relu)
-        _, grads['W1'], grads['b1'] = task1.ts_lib.conv_back(dlayer1, cache1)
+        dlayer2_relu, grads['W3'], grads['b3'] = ts_lib.fc_back(dscores, cache3)
+        dlayer2 = ts_lib.relu_back(dlayer2_relu, cache2_relu)
+        dlayer1_pool, grads['W2'], grads['b2'] = ts_lib.fc_back(dlayer2, cache2)
+        dlayer1_relu = ts_lib.max_pool_back(dlayer1_pool, cache1_pool)
+        dlayer1 = ts_lib.relu_back(dlayer1_relu, cache1_relu)
+        _, grads['W1'], grads['b1'] = ts_lib.conv_back(dlayer1, cache1)
         grads['W3'] += self.reg * W3
         grads['W2'] += self.reg * W2
         grads['W1'] += self.reg * W1
