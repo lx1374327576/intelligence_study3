@@ -52,6 +52,7 @@ def conv(x, w, b, stride, pad):
                 for l in range(W_new):
                     out[i, j, k, l] = np.sum(x_pad[i, :, k*stride:k*stride+HH, l*stride:l*stride+WW] * w[j]) + b[j]
     cache = (x, w, b, stride, pad)
+    return out, cache
 
 
 def conv_back(dout, cache):
