@@ -59,6 +59,7 @@ class Solver:
 
         print('train_acc', train_acc, 'val_acc', val_acc)
         if self.best_acc < val_acc:
+            self.best_acc = val_acc
             self.best_model = self.model
 
     def get_best_model(self):
