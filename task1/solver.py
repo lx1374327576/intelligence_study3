@@ -36,6 +36,8 @@ class Solver:
             if i % 10 == 0:
                 print('repeat ', i, ' times:')
                 self.check_acc()
+            if i % 5 == 0:
+                self.learning_rate *= 0.9
         self.check_acc()
 
     def check_acc(self, iters=100):
