@@ -41,11 +41,13 @@ class Cir10:
         Xte, Yte = self.load_CIFAR_batch(os.path.join(ROOT, 'test_batch'))
         return Xtr, Ytr, Xte, Yte
 
-    # reference from cs321n
-    def get_CIFAR10_data(self, num_training=49000, num_validation=1000, num_test=1000):
+    def get_CIFAR10_data(self, num_training=49000, num_validation=1000, num_test=1000, tran=None):
         cifar10_dir = './datasets/cifar-10-batches-py'
 
         X_train, y_train, X_test, y_test = self.load_CIFAR10(cifar10_dir)
+        if tran is not None:
+            X_train = tran(X_train)
+            X_test = tran(X_test)
 
         # Subsample the data
         mask = list(range(num_training, num_training + num_validation))
@@ -61,10 +63,10 @@ class Cir10:
         return X_train, y_train, X_val, y_val, X_test, y_test
 
 
-cir = Cir10()
-X_train, y_train, _, _, _, _ = cir.get_CIFAR10_data()
-for i in range(10):
-    image = X_train[i, :, :, :]
-    plt.figure(i)
-    plt.imshow(image)
-    plt.show()
+# cir = Cir10()
+# X_train, y_train, _, _, _, _ = cir.get_CIFAR10_data()
+# for i in range(10):
+#     image = X_train[i, :, :, :]
+#     plt.figure(i)
+#     plt.imshow(image)
+#     plt.show()
