@@ -9,7 +9,7 @@ import ts_lib
 class Cnn(object):
 
     def __init__(self, input_dim=(1, 28, 28), num_filters=32, filter_size=7,
-                 hidden_dim=100, num_classes=10, weight_scale=1e-2, reg=0.0):
+                 hidden_dim=100, num_classes=10, weight_scale=1e-2, reg=0):
 
         self.params = {}
         self.reg = reg

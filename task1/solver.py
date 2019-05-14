@@ -39,6 +39,7 @@ class Solver:
             if i % 5 == 0:
                 self.learning_rate *= 0.9
         self.check_acc()
+        print('best_val_acc:', self.best_acc)
 
     def check_acc(self, iters=100):
 

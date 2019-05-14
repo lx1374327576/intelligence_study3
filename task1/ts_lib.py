@@ -34,8 +34,8 @@ def softmax(x, y):
 
 
 def relu(x):
-    # out = np.maximum(x, 0)
-    out = x
+    out = np.maximum(x, 0)
+    # out = x
     cache = x
     return out, cache
 
@@ -43,7 +43,7 @@ def relu(x):
 def relu_back(dout, cache):
     x = cache
     dx = dout
-    # dx[x <= 0] = 0
+    dx[x <= 0] = 0
     return dx
 
 

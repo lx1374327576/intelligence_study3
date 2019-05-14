@@ -15,5 +15,5 @@ data['y_train'] = mnist.y[:100]
 data['X_val'] = mnist.X[100:200].reshape((100, 1, 28, 28))
 data['y_val'] = mnist.y[100:200]
 model = Cnn()
-solver = Solver(model, data, learning_rate=4e-1, batch_size=50, times=50)
+solver = Solver(model, data, learning_rate=4e-1, batch_size=50, times=80)
 solver.train()
