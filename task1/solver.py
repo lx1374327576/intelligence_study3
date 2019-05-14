@@ -26,6 +26,7 @@ class Solver:
         print('loss: ', loss)
         for key, _ in self.model.params.items():
             dw = grads[key]
+            # print(key, dw)
             self.model.params[key] -= self.learning_rate * dw
 
     def train(self):

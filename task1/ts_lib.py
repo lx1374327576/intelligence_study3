@@ -3,6 +3,7 @@ import numpy as np
 
 def fc(x, w, b):
     out = x.reshape(x.shape[0], np.prod(x.shape[1:])).dot(w) + b
+    # print('out: ', out)
     cache = (x, w, b)
     return out, cache
 
@@ -11,7 +12,11 @@ def fc_back(dout, cache):
     x, w, b = cache
     db = np.sum(dout, axis=0)
     dx = dout.dot(w.T).reshape(x.shape)
+    # print('fc_back x:', x)
+    # print('fc_back dout', dout)
+
     dw = x.reshape(x.shape[0], w.shape[0]).T.dot(dout)
+    # print('fc_back dw', dw)
     return dx, dw, db
 
 
@@ -29,7 +34,8 @@ def softmax(x, y):
 
 
 def relu(x):
-    out = np.maximum(x, 0)
+    # out = np.maximum(x, 0)
+    out = x
     cache = x
     return out, cache
 
@@ -37,7 +43,7 @@ def relu(x):
 def relu_back(dout, cache):
     x = cache
     dx = dout
-    dx[x <= 0] = 0
+    # dx[x <= 0] = 0
     return dx
 
 

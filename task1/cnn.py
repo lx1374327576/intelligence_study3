@@ -9,7 +9,7 @@ import ts_lib
 class Cnn(object):
 
     def __init__(self, input_dim=(1, 28, 28), num_filters=32, filter_size=7,
-                 hidden_dim=100, num_classes=10, weight_scale=1e-3, reg=0.0):
+                 hidden_dim=100, num_classes=10, weight_scale=1e-2, reg=0.0):
 
         self.params = {}
         self.reg = reg
@@ -41,6 +41,14 @@ class Cnn(object):
         layer2_relu, cache2_relu = ts_lib.relu(layer2)
         scores, cache3 = ts_lib.fc(layer2_relu, W3, b3)
 
+        # print('X:', X)
+        # print('layer1:', layer1)
+        # print('layer1_relu', layer1_relu)
+        # print('layer1_pool', layer1_pool)
+        # print('layer2', layer2)
+        # print('layer2_relu', layer2_relu)
+        # print('scores', scores)
+
         if y is None:
             return scores
 
@@ -53,6 +61,19 @@ class Cnn(object):
         dlayer1_relu = ts_lib.max_pool_back(dlayer1_pool, cache1_pool)
         dlayer1 = ts_lib.relu_back(dlayer1_relu, cache1_relu)
         _, grads['W1'], grads['b1'] = ts_lib.conv_back(dlayer1, cache1)
+
+        # print('dlayer2_relu:', dlayer2_relu[0])
+        # print('w3:', grads['W3'][0])
+        # print('b3:', grads['b3'][0])
+        # print('dlayer2:', dlayer2[0])
+        # print('dlayer1_pool:', dlayer1_pool[0])
+        # print('w2:', grads['W2'][0])
+        # print('b2:', grads['b2'][0])
+        # print('dlayer1_relu:', dlayer1_relu[0])
+        # print('dlayer1:', dlayer1[0])
+        # print('w1:', grads['W1'][0])
+        # print('b1:', grads['b1'][0])
+
         grads['W3'] += self.reg * W3
         grads['W2'] += self.reg * W2
         grads['W1'] += self.reg * W1
