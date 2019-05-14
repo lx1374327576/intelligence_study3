@@ -2,6 +2,7 @@ import numpy as np
 import os
 import platform
 from six.moves import cPickle as pickle
+import matplotlib.pyplot as plt
 
 
 class Cir10:
@@ -21,7 +22,7 @@ class Cir10:
             datadict = self.load_pickle(f)
             X = datadict['data']
             Y = datadict['labels']
-            X = X.reshape(10000, 3, 32, 32).transpose(0, 2, 3, 1).astype("float")
+            X = X.reshape(10000, 3, 32, 32).transpose(0, 2, 3, 1).astype("int")
             Y = np.array(Y)
             return X, Y
 
@@ -58,3 +59,12 @@ class Cir10:
         y_test = y_test[mask]
 
         return X_train, y_train, X_val, y_val, X_test, y_test
+
+
+cir = Cir10()
+X_train, y_train, _, _, _, _ = cir.get_CIFAR10_data()
+for i in range(10):
+    image = X_train[i, :, :, :]
+    plt.figure(i)
+    plt.imshow(image)
+    plt.show()
