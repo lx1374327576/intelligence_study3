@@ -1,35 +1,47 @@
 # runtime
 from dataset import Cir10
-from cnn import Cnn
-from solver import Solver
-
-# debug
-# from .dataset import Cir10
-# from .cnn import Cnn
-# from .solver import Solver
 
 import numpy as np
+import tensorflow as tf
 
 
-def tran(x):
-    x = x.transpose(0, 3, 2, 1)
-    return x
+# def tran(x):
+#     x = x.transpose(0, 3, 1, 2)
+#     return x
 
 
 cir10 = Cir10()
-X_train, y_train, X_val, y_val, X_test, y_test = cir10.get_CIFAR10_data(tran=tran)
-arr = np.random.permutation(range(X_train.shape[0]))
-data = dict()
-data['X_train'] = X_train
-data['y_train'] = y_train
-data['X_val'] = X_val
-data['y_val'] = y_val
-print(X_train.shape)
-model = Cnn()
-solver = Solver(model, data, learning_rate=6e-1, batch_size=50, times=120)
-solver.train()
-model = solver.get_best_model
-scores = model.loss(X_test)
-y_pred = np.argmax(scores, axis=1)
-acc = np.mean(y_pred == y_test)
-print('test_acc:', acc)
+X_train, y_train, X_val, y_val, X_test, y_test = cir10.get_CIFAR10_data()
+
+tf.reset_default_graph()
+
+with tf.device('/cpu:0'):
+    sc_init = tf.variance_scaling_initializer(scale=2.0)
+
+    optimizer = tf.keras.optimizers.SGD(lr=1e-2)
+
+    layers = [
+        tf.keras.layers.Conv2D(128, (5, 5), (1, 1), "same", activation='relu',
+                               use_bias=True, bias_initializer=tf.zeros_initializer(),
+                               kernel_initializer=sc_init, input_shape=(32, 32, 3)),
+        tf.keras.layers.Conv2D(128, (5, 5), (1, 1), "same", activation='relu',
+                               use_bias=True, bias_initializer=tf.zeros_initializer(),
+                               kernel_initializer=sc_init),
+        tf.keras.layers.Conv2D(128, (5, 5), (1, 1), "same", activation='relu',
+                               use_bias=True, bias_initializer=tf.zeros_initializer(),
+                               kernel_initializer=sc_init, input_shape=(32, 32, 3)),
+        tf.keras.layers.Conv2D(128, (5, 5), (1, 1), "same", activation='relu',
+                               use_bias=True, bias_initializer=tf.zeros_initializer(),
+                               kernel_initializer=sc_init, input_shape=(32, 32, 3)),
+        tf.keras.layers.MaxPool2D(strides=2),
+        tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(10, kernel_initializer=sc_init,
+                              kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+        tf.keras.layers.Softmax(),
+    ]
+
+    model = tf.keras.Sequential(layers)
+
+    model.compile(optimizer, "sparse_categorical_crossentropy", metrics=['accuracy'])
+
+    model.fit(X_train, y_train, batch_size=32, epochs=10, validation_data=(X_val, y_val))
