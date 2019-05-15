@@ -18,7 +18,7 @@ tf.reset_default_graph()
 with tf.device('/cpu:0'):
     sc_init = tf.variance_scaling_initializer(scale=2.0)
 
-    optimizer = tf.keras.optimizers.SGD(lr=1e-2)
+    optimizer = tf.keras.optimizers.SGD(lr=1e-2, momentum=0.9, decay=1e-6)
 
     layers = [
         tf.keras.layers.Conv2D(128, (5, 5), (1, 1), "same", activation='relu',
@@ -43,7 +43,7 @@ with tf.device('/cpu:0'):
         tf.keras.layers.MaxPool2D(strides=2),
         tf.keras.layers.Flatten(),
         tf.keras.layers.Dense(10, kernel_initializer=sc_init,
-                              kernel_regularizer=tf.keras.regularizers.l2(0.01)),
+                              kernel_regularizer=tf.keras.regularizers.l2(0.02)),
         tf.keras.layers.Softmax(),
     ]
 
