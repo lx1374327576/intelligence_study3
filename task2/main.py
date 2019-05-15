@@ -42,8 +42,10 @@ with tf.device('/cpu:0'):
         tf.keras.layers.BatchNormalization(),
         tf.keras.layers.MaxPool2D(strides=2),
         tf.keras.layers.Flatten(),
+        tf.keras.layers.Dense(100, kernel_initializer=sc_init, activation='relu',
+                              kernel_regularizer=tf.keras.regularizers.l2(0.01)),
         tf.keras.layers.Dense(10, kernel_initializer=sc_init,
-                              kernel_regularizer=tf.keras.regularizers.l2(0.02)),
+                              kernel_regularizer=tf.keras.regularizers.l2(0.01)),
         tf.keras.layers.Softmax(),
     ]
 
